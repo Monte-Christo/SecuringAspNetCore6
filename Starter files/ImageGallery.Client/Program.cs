@@ -33,6 +33,7 @@ builder.Services
         o.ClientSecret = "secret";
         o.ResponseType = "code";
         o.SaveTokens = true;
+        o.GetClaimsFromUserInfoEndpoint = true;
     });
 
 var app = builder.Build();

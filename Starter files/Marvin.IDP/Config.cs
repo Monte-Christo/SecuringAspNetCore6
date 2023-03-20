@@ -17,9 +17,9 @@ public static class Config
           { };
 
   public static IEnumerable<Client> Clients =>
-      new Client[]
+      new[]
       {
-            new Client()
+            new Client
             {
                 ClientName = "Image Gallery",
                 ClientId = "imagegalleryclient",
