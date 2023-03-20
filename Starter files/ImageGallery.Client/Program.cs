@@ -35,4 +35,4 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Gallery}/{action=Index}/{id?}");
 
-app.Run();
+await app.RunAsync();
