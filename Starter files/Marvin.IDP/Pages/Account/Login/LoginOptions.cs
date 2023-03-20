@@ -1,4 +1,4 @@
-namespace Marvin.IDP.Pages.Login;
+namespace Marvin.IDP.Pages.Account.Login;
 
 public class LoginOptions
 {

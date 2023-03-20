@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Marvin.IDP.Pages.Login;
+namespace Marvin.IDP.Pages.Account.Login;
 
 [SecurityHeaders]
 [AllowAnonymous]
