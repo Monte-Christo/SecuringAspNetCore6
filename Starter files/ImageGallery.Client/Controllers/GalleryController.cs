@@ -38,11 +38,9 @@ public class GalleryController : Controller
 
         response.EnsureSuccessStatusCode();
 
-        using (var responseStream = await response.Content.ReadAsStreamAsync())
-        {
-            var images = await JsonSerializer.DeserializeAsync<List<Image>>(responseStream);
-            return View(new GalleryIndexViewModel(images ?? new List<Image>()));
-        }
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
+        var images = await JsonSerializer.DeserializeAsync<List<Image>>(responseStream);
+        return View(new GalleryIndexViewModel(images ?? new List<Image>()));
     }
 
     public async Task<IActionResult> EditImage(Guid id)
@@ -59,23 +57,21 @@ public class GalleryController : Controller
 
         response.EnsureSuccessStatusCode();
 
-        using (var responseStream = await response.Content.ReadAsStreamAsync())
+        await using var responseStream = await response.Content.ReadAsStreamAsync();
+        var deserializedImage = await JsonSerializer.DeserializeAsync<Image>(responseStream);
+
+        if (deserializedImage != null)
         {
-            var deserializedImage = await JsonSerializer.DeserializeAsync<Image>(responseStream);
+          var editImageViewModel = new EditImageViewModel()
+          {
+            Id = deserializedImage.Id,
+            Title = deserializedImage.Title
+          };
 
-            if (deserializedImage == null)
-            {
-                throw new Exception("Deserialized image must not be null.");
-            }
-
-            var editImageViewModel = new EditImageViewModel()
-            {
-                Id = deserializedImage.Id,
-                Title = deserializedImage.Title
-            };
-
-            return View(editImageViewModel);
+          return View(editImageViewModel);
         }
+
+        throw new Exception("Deserialized image must not be null.");
     }
 
     [HttpPost]
@@ -153,13 +149,10 @@ public class GalleryController : Controller
 
         if (imageFile.Length > 0)
         {
-            using (var fileStream = imageFile.OpenReadStream())
-            using (var ms = new MemoryStream())
-            {
-                fileStream.CopyTo(ms);
-                imageForCreation = new ImageForCreation(
-                    addImageViewModel.Title, ms.ToArray());
-            }
+          await using var fileStream = imageFile.OpenReadStream();
+          await using var ms = new MemoryStream();
+          await fileStream.CopyToAsync(ms);
+          imageForCreation = new ImageForCreation(addImageViewModel.Title, ms.ToArray());
         }
 
         // serialize it
