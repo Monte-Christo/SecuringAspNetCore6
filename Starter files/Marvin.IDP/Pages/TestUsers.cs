@@ -10,43 +10,45 @@ namespace Marvin.IDP.Pages;
 
 public class TestUsers
 {
-    public static List<TestUser> Users
+  public static List<TestUser> Users
+  {
+    get
     {
-        get
+      var address = new
+      {
+        street_address = "One Hacker Way",
+        locality = "Heidelberg",
+        postal_code = 69118,
+        country = "Germany"
+      };
+
+      return new List<TestUser>
         {
-            var address = new
+          new TestUser
+          {
+            SubjectId = "1",
+            Username = "David",
+            Password = "password",
+            Claims =
             {
-                street_address = "One Hacker Way",
-                locality = "Heidelberg",
-                postal_code = 69118,
-                country = "Germany"
-            };
-                
-            return new List<TestUser>
+              new Claim("role", "FreeUser"),
+              new Claim(JwtClaimTypes.GivenName, "David"),
+              new Claim(JwtClaimTypes.FamilyName, "Flagg"),
+            }
+},
+        new TestUser
+        {
+            SubjectId = "2",
+            Username = "Emma",
+            Password = "password",
+            Claims =
             {
-                new TestUser
-                {
-                    SubjectId = "1",
-                    Username = "David",
-                    Password = "password",
-                    Claims =
-                    {
-                        new Claim(JwtClaimTypes.GivenName, "David"),
-                        new Claim(JwtClaimTypes.FamilyName, "Flagg"),
-                    }
-                },
-                new TestUser
-                {
-                    SubjectId = "2",
-                    Username = "Emma",
-                    Password = "password",
-                    Claims =
-                    {
-                        new Claim(JwtClaimTypes.GivenName, "Emma"),
-                        new Claim(JwtClaimTypes.FamilyName, "Flagg"),
-                    }
-                }
-            };
-        }
+              new Claim("role", "PayingUser"),
+              new Claim(JwtClaimTypes.GivenName, "Emma"),
+              new Claim(JwtClaimTypes.FamilyName, "Flagg"),
+            }
+          }
+      };
     }
+  }
 }
