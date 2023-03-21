@@ -59,7 +59,7 @@ public class ImagesController : ControllerBase
     return Ok(imageToReturn);
   }
 
-  [HttpPost()]
+  [HttpPost]
   public async Task<ActionResult<Image>> CreateImage([FromBody] ImageForCreation imageForCreation)
   {
     // Automapper maps only the Title in our configuration
