@@ -45,8 +45,7 @@ public class GalleryController : Controller
 
     public async Task<IActionResult> EditImage(Guid id)
     {
-
-        var httpClient = _httpClientFactory.CreateClient("APIClient");
+      var httpClient = _httpClientFactory.CreateClient("APIClient");
 
         var request = new HttpRequestMessage(
             HttpMethod.Get,
@@ -181,11 +180,13 @@ public class GalleryController : Controller
     public async Task LogIdentityInformation()
     {
         var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
+        var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
         var userClaimsStringBuilder = new StringBuilder();
         foreach (var userClaim in User.Claims)
         {
             userClaimsStringBuilder.AppendLine($"Claim type: {userClaim.Type}; Claim value: {userClaim.Value}");
         }
         _logger.LogInformation($"Identity token & user claims: \n{identityToken}\n{userClaimsStringBuilder}");
+        _logger.LogInformation($"Access token: \n{accessToken}");
     }
 }
