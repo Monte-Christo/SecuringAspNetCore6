@@ -20,19 +20,22 @@ public class ImagesController : ControllerBase
       IWebHostEnvironment hostingEnvironment,
       IMapper mapper)
   {
-    _galleryRepository = galleryRepository ??
-        throw new ArgumentNullException(nameof(galleryRepository));
-    _hostingEnvironment = hostingEnvironment ??
-        throw new ArgumentNullException(nameof(hostingEnvironment));
-    _mapper = mapper ??
-        throw new ArgumentNullException(nameof(mapper));
+    _galleryRepository = galleryRepository ?? throw new ArgumentNullException(nameof(galleryRepository));
+    _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
+    _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
   }
 
   [HttpGet]
   public async Task<ActionResult<IEnumerable<Image>>> GetImages()
   {
+    var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+    if (ownerId == null)
+    {
+      throw new ArgumentNullException($"User identifier is missing from token: {nameof(ownerId)}");
+    }
+
     // get from repo
-    var imagesFromRepo = await _galleryRepository.GetImagesAsync();
+    var imagesFromRepo = await _galleryRepository.GetImagesAsync(ownerId);
 
     // map to model
     var imagesToReturn = _mapper.Map<IEnumerable<Image>>(imagesFromRepo);
