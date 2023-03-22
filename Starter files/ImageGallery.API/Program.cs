@@ -49,6 +49,10 @@ builder.Services.AddAuthorization(o =>
   {
     policyBuilder.RequireClaim("scope", $"{ImageGalleryApi}.write");
   });
+  o.AddPolicy("MustOwnImage", policyBuilder =>
+  {
+    policyBuilder.RequireAuthenticatedUser();
+  });
 });
 
 var app = builder.Build();
