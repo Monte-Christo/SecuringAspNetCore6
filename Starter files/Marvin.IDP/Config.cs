@@ -5,6 +5,8 @@ namespace Marvin.IDP;
 
 public static class Config
 {
+  private static readonly string ImageGalleryApi = nameof(ImageGalleryApi).ToLower();
+
   public static IEnumerable<IdentityResource> IdentityResources =>
       new IdentityResource[]
       {
@@ -17,13 +19,13 @@ public static class Config
   public static IEnumerable<ApiResource> ApiResources =>
     new ApiResource[]
     {
-      new("imagegalleryapi", "Image Gallery API", new []{"role", "country"})
+      new(ImageGalleryApi, "Image Gallery API", new []{"role", "country"})
       {
         Scopes =
         {
-          "imagegalleryapi.fullaccess", 
-          "imagegalleryapi.read", 
-          "imagegalleryapi.write"
+          $"{ImageGalleryApi}.fullaccess", 
+          $"{ImageGalleryApi}.read", 
+          $"{ImageGalleryApi}.write"
         },
         ApiSecrets = { new Secret("apisecret".Sha256()) }
       }
@@ -32,9 +34,9 @@ public static class Config
   public static IEnumerable<ApiScope> ApiScopes =>
       new ApiScope[]
       {
-        new ("imagegalleryapi.fullaccess"),
-        new ("imagegalleryapi.read"),
-        new ("imagegalleryapi.write"),
+        new ($"{ImageGalleryApi}.fullaccess"),
+        new ($"{ImageGalleryApi}.read"),
+        new ($"{ImageGalleryApi}.write"),
       };
 
   public static IEnumerable<Client> Clients =>
@@ -58,8 +60,8 @@ public static class Config
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     "roles",
-                    "imagegalleryapi.read",
-                    "imagegalleryapi.write",
+                    $"{ImageGalleryApi}.read",
+                    $"{ImageGalleryApi}.write",
                     "country",
                 },
                 ClientSecrets =

@@ -4,6 +4,9 @@ using ImageGallery.API.Services;
 using ImageGallery.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+string ImageGalleryApi = nameof(ImageGalleryApi).ToLower();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddJwtBearer(o =>
   {
     o.Authority = "https://localhost:5001";
-    o.Audience = "imagegalleryapi";
+    o.Audience = ImageGalleryApi;
     o.TokenValidationParameters = new()
     {
       NameClaimType = "given_name",
@@ -44,7 +47,7 @@ builder.Services.AddAuthorization(o =>
   o.AddPolicy("UserCanAddImage", AuthorizationPolicies.CanAddImage());
   o.AddPolicy("ClientApplicationCanWrite", policyBuilder =>
   {
-    policyBuilder.RequireClaim("scope", "imagegalleryapi.write");
+    policyBuilder.RequireClaim("scope", $"{ImageGalleryApi}.write");
   });
 });
 

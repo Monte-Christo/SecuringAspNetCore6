@@ -88,7 +88,7 @@ public class ImagesController : ControllerBase
     var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
     if (ownerId == null)
     {
-      throw new ArgumentNullException($"Usr id is missing from token: {nameof(ownerId)}");
+      throw new ArgumentException($"User id is missing from token: {nameof(ownerId)}");
     }
     imageEntity.OwnerId = ownerId;
 

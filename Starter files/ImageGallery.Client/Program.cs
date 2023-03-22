@@ -5,6 +5,9 @@ using System.IdentityModel.Tokens.Jwt;
 using ImageGallery.Authorization;
 using Microsoft.AspNetCore.Authentication;
 
+
+string ImageGalleryApi = nameof(ImageGalleryApi).ToLower();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -46,8 +49,8 @@ builder.Services
         o.ClaimActions.DeleteClaim("sid");
         o.ClaimActions.DeleteClaim("idp");
         o.Scope.Add("roles");
-        o.Scope.Add("imagegalleryapi.read");
-        o.Scope.Add("imagegalleryapi.write");
+        o.Scope.Add($"{ImageGalleryApi}.read");
+        o.Scope.Add($"{ImageGalleryApi}.write");
         o.Scope.Add("country");
         o.ClaimActions.MapJsonKey("role", "role");
         o.ClaimActions.MapUniqueJsonKey("country", "country");
