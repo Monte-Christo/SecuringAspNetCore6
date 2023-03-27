@@ -52,6 +52,7 @@ builder.Services
         o.Scope.Add($"{ImageGalleryApi}.read");
         o.Scope.Add($"{ImageGalleryApi}.write");
         o.Scope.Add("country");
+        o.Scope.Add("offline_access");
         o.ClaimActions.MapJsonKey("role", "role");
         o.ClaimActions.MapUniqueJsonKey("country", "country");
         o.TokenValidationParameters = new()

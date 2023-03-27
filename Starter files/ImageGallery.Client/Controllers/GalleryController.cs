@@ -182,12 +182,15 @@ public class GalleryController : Controller
     {
         var identityToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.IdToken);
         var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+        var refreshToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
+
         var userClaimsStringBuilder = new StringBuilder();
         foreach (var userClaim in User.Claims)
         {
             userClaimsStringBuilder.AppendLine($"Claim type: {userClaim.Type}; Claim value: {userClaim.Value}");
         }
         _logger.LogInformation($"Identity token & user claims: \n{identityToken}\n{userClaimsStringBuilder}");
-        _logger.LogInformation($"Access token: \n{accessToken}");
+        _logger.LogInformation($"Access token: \n{accessToken}\n");
+        _logger.LogInformation($"Refresh token: \n{refreshToken}\n");
     }
 }
