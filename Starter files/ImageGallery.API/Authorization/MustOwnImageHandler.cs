@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ImageGallery.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ImageGallery.API.Authorization;
 
 public class MustOwnImageHandler : AuthorizationHandler<MustOwnImageRequirement>
 {
+  private readonly IGalleryRepository _galleryRepository;
   private readonly IHttpContextAccessor _contextAccessor;
 
-  public MustOwnImageHandler(IHttpContextAccessor contextAccessor)
+  public MustOwnImageHandler(IGalleryRepository galleryRepository ,IHttpContextAccessor contextAccessor)
   {
+    _galleryRepository = galleryRepository ?? throw new ArgumentNullException(nameof(galleryRepository));
     _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
   }
   protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, MustOwnImageRequirement requirement)
@@ -24,6 +27,11 @@ public class MustOwnImageHandler : AuthorizationHandler<MustOwnImageRequirement>
       context.Fail();
       return;
     }
-
+    if (!await _galleryRepository.IsImageOwnerAsync(id, ownerId))
+    {
+      context.Fail();
+      return;
+    }
+    context.Succeed(requirement);
   }
 }
