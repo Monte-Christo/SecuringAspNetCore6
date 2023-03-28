@@ -11,50 +11,45 @@ namespace ImageGallery.Client.Controllers;
 public class AuthenticationController : Controller
 {
   private readonly IHttpClientFactory _httpClientFactory;
+  private readonly HttpClient _httpClient;
 
   public AuthenticationController(IHttpClientFactory httpClientFactory)
   {
     _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
+    _httpClient = _httpClientFactory.CreateClient("IDPClient");
   }
 
   [Authorize]
   public async Task Logout()
   {
-    var client = _httpClientFactory.CreateClient("IDPClient");
-    var discoveryDocResponse = await client.GetDiscoveryDocumentAsync();
+    var discoveryDocResponse = await _httpClient.GetDiscoveryDocumentAsync();
     if (discoveryDocResponse.IsError)
     {
       throw new Exception(discoveryDocResponse.Error);
     }
 
-    var accessTokenRevocationResponse = await client.RevokeTokenAsync(new ()
-    {
-      Address = discoveryDocResponse.RevocationEndpoint,
-      ClientId = "imagegalleryclient",
-      ClientSecret = "secret",
-      Token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken)
-    });
-
-    if (accessTokenRevocationResponse.IsError)
-    {
-      throw new Exception(accessTokenRevocationResponse.Error);
-    }
-
-    var refreshTokenRevocationResponse = await client.RevokeTokenAsync(new ()
-    {
-      Address = discoveryDocResponse.RevocationEndpoint,
-      ClientId = "imagegalleryclient",
-      ClientSecret = "secret",
-      Token = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken)
-    });
-
-    if (refreshTokenRevocationResponse.IsError)
-    {
-      throw new Exception(refreshTokenRevocationResponse.Error);
-    }
+    var revocationEndPoint = discoveryDocResponse.RevocationEndpoint;
+    await RevokeToken(revocationEndPoint, OpenIdConnectParameterNames.AccessToken);
+    await RevokeToken(revocationEndPoint, OpenIdConnectParameterNames.RefreshToken);
 
     await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+  }
+
+  private async Task RevokeToken(string endPoint, string token)
+  {
+    var tokenRevocationResponse = await _httpClient.RevokeTokenAsync(new()
+    {
+      Address = endPoint,
+      ClientId = "imagegalleryclient",
+      ClientSecret = "secret",
+      Token = await HttpContext.GetTokenAsync(token)
+    });
+
+    if (tokenRevocationResponse.IsError)
+    {
+      throw new Exception(tokenRevocationResponse.Error);
+    }
   }
 
   public IActionResult AccessDenied()
