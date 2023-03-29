@@ -11,17 +11,15 @@ namespace Marvin.IDP.Services
         Task<IEnumerable<UserClaim>> GetUserClaimsBySubjectAsync(
             string subject);
 
-        Task<User> GetUserByUserNameAsync(
-            string userName);
+        Task<User> GetUserByUserNameAsync(string userName);
 
-        Task<User> GetUserBySubjectAsync(
-            string subject);
+        Task<User> GetUserBySubjectAsync(string subject);
 
-        void AddUser
-            (User userToAdd);
+        void AddUser(User userToAdd, string password);
 
-        Task<bool> IsUserActive(
-            string subject);
+        Task<bool> IsUserActive(string subject);
+
+        Task<bool> ActivateUserAsync(string securityCode);
 
         Task<bool> SaveChangesAsync();
     }

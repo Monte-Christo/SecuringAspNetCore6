@@ -40,10 +40,10 @@ public class IndexModel : PageModel
 
     var userToCreate = new Entities.User
     {
-      Password = Input.Password,
       UserName = Input.UserName,
       Subject = Guid.NewGuid().ToString(),
-      Active = true
+      Email = Input.Email,
+      Active = false
     };
 
     userToCreate.Claims.Add(new Entities.UserClaim
@@ -63,23 +63,29 @@ public class IndexModel : PageModel
       Type = JwtClaimTypes.FamilyName,
       Value = Input.FamilyName
     });
-    _localUserService.AddUser(userToCreate);
+    _localUserService.AddUser(userToCreate, Input.Password);
     await _localUserService.SaveChangesAsync();
 
-    var isUser = new IdentityServerUser(userToCreate.Subject)
-    {
-      DisplayName = userToCreate.UserName
-    };
+    var activationLink = Url.PageLink("/user/activation/index", 
+      values: new { securityCode = userToCreate.SecurityCode });
+    Console.WriteLine(activationLink);
 
-    await HttpContext.SignInAsync(isUser);
+    return Redirect("~/User/ActivationCodeSent");
 
-    if (_interactionService.IsValidReturnUrl(Input.ReturnUrl) ||
-        Url.IsLocalUrl(Input.ReturnUrl))
-    {
-      return Redirect(Input.ReturnUrl);
-    }
+    //var isUser = new IdentityServerUser(userToCreate.Subject)
+    //{
+    //  DisplayName = userToCreate.UserName
+    //};
 
-    return Redirect("~/");
+    //await HttpContext.SignInAsync(isUser);
+
+    //if (_interactionService.IsValidReturnUrl(Input.ReturnUrl) ||
+    //    Url.IsLocalUrl(Input.ReturnUrl))
+    //{
+    //  return Redirect(Input.ReturnUrl);
+    //}
+
+    //return Redirect("~/");
   }
 
   private void BuildModel(string returnUrl)
