@@ -17,7 +17,7 @@ public class IndexModel : PageModel
   }
 
   [BindProperty]
-  public InputModel Input { get; set; }
+  public InputModel Input { get; set; } = new();
 
   public async Task<IActionResult> OnGet(string securityCode)
   {
