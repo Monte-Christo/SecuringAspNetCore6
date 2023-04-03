@@ -36,7 +36,7 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
   .AddOAuth2Introspection(o =>
   {
-    o.Authority = "https://localhost:5001";
+    o.Authority = "https://localhost:44300";
     o.ClientId = ImageGalleryApi;
     o.ClientSecret = "apisecret";
     o.NameClaimType = "given_name";

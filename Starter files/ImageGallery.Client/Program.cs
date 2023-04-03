@@ -5,8 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using ImageGallery.Authorization;
 using Microsoft.AspNetCore.Authentication;
 
-
-string ImageGalleryApi = nameof(ImageGalleryApi).ToLower();
+const string idpUrl = "https://localhost:44300/";
+string imageGalleryApi = nameof(imageGalleryApi).ToLower();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,7 +28,7 @@ builder.Services.AddHttpClient("APIClient", client =>
 
 builder.Services.AddHttpClient("IDPClient", client =>
 {
-  client.BaseAddress = new Uri("https://localhost:5001/");
+  client.BaseAddress = new Uri(idpUrl);
 });
 
 builder.Services
@@ -44,7 +44,7 @@ builder.Services
     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, o =>
     {
         o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        o.Authority = "https://localhost:5001/";
+        o.Authority = idpUrl;
         o.ClientId = "imagegalleryclient";
         o.ClientSecret = "secret";
         o.ResponseType = "code";
@@ -54,8 +54,8 @@ builder.Services
         o.ClaimActions.DeleteClaim("sid");
         o.ClaimActions.DeleteClaim("idp");
         o.Scope.Add("roles");
-        o.Scope.Add($"{ImageGalleryApi}.read");
-        o.Scope.Add($"{ImageGalleryApi}.write");
+        o.Scope.Add($"{imageGalleryApi}.read");
+        o.Scope.Add($"{imageGalleryApi}.write");
         o.Scope.Add("country");
         o.Scope.Add("offline_access");
         o.ClaimActions.MapJsonKey("role", "role");
