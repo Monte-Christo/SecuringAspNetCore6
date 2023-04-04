@@ -9,6 +9,8 @@ public class IdentityDbContext : DbContext
 
   public DbSet<UserClaim> UserClaims { get; set; }
 
+  public DbSet<UserLogin> UserLogins { get; set; }
+
   public IdentityDbContext(DbContextOptions<IdentityDbContext> options) : base(options)
   {
   }
