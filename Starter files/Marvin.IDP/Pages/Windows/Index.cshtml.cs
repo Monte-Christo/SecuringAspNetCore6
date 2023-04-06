@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using System.Security.Principal;
 
-namespace Marvin.IDP.Pages.Windows
+namespace Marvin.IDP.Pages.Windows;
+
+public class IndexModel : PageModel
 {
-  public class IndexModel : PageModel
-    {
   public async Task<IActionResult> OnGet(string returnUrl)
   {
     // see if windows auth has already been requested and succeeded
@@ -39,5 +39,4 @@ namespace Marvin.IDP.Pages.Windows
       return Challenge("Windows");
     }
   }
-    }
 }
